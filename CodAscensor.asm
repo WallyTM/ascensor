@@ -2,13 +2,13 @@ list p=16F88
 #include <P16F88.INC>
 __CONFIG    _CONFIG1, _CP_OFF & _CCP1_RB0 & _DEBUG_OFF & _WRT_PROTECT_OFF & _CPD_OFF & _LVP_OFF & _BODEN_OFF & _MCLR_ON & _PWRTE_ON & _WDT_OFF & _XT_OSC
 __CONFIG    _CONFIG2, _IESO_OFF & _FCMEN_OFF
-#define		clk				PORTA,0
+#define		clk			PORTA,0
 #define		dato			PORTA,1
-#define		v				PORTA,2
+#define		v			PORTA,2
 #define		enc_v			PORTA,3
 #define		set_v			PORTA,4
-#define		sw1				PORTB,2
-#define		sw2				PORTB,3
+#define		sw1			PORTB,2
+#define		sw2			PORTB,3
 #define		pwm1			val_motores,0
 #define		direc1			val_motores,1
 #define		pwm2			val_motores,2
@@ -20,17 +20,17 @@ __CONFIG    _CONFIG2, _IESO_OFF & _FCMEN_OFF
 #define		led2_b			val_leds,1
 #define		led1			val_leds,0
 #define		down4			pul1,0
-#define		up3				pul1,1
+#define		up3			pul1,1
 #define		down3			pul1,2
-#define		up2				pul1,3
+#define		up2			pul1,3
 #define		down2			pul1,4
-#define		up1				pul1,5
-#define		p1				pul1,6
-#define		p2				pul1,7
-#define		p3				pul2,0
-#define		p4				pul2,1
-#define		p1h				pri,0
-#define		p2h				pri,1
+#define		up1			pul1,5
+#define		p1			pul1,6
+#define		p2			pul1,7
+#define		p3			pul2,0
+#define		p4			pul2,1
+#define		p1h			pri,0
+#define		p2h			pri,1
 
 cblock 0x20
 	val_motores,val_leds,disp_piso,num_piso,reg_seriales,nbits,tecla,cont1,cont2,pul1,pul2,piso_act,piso_s,encoder,enc_piso,aux_1,aux_2_up,aux_2_down,pri,pri1,pri2
@@ -41,18 +41,18 @@ org	0x00
 org	0x05
 tabla1
 	addwf	PCL,1
-	dt		0xff,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90
+	dt	0xff,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90
 ;---------------------------------------			
 inicio
-	bsf		STATUS,RP0
+	bsf	STATUS,RP0
 	movlw	b'00011000'
 	movwf	TRISA
 	movlw	b'11111100'
 	movwf	TRISB
-	bcf		OPTION_REG,7
+	bcf	OPTION_REG,7
 	clrf	ANSEL
-	bcf		STATUS,RP0
-	bcf		v
+	bcf	STATUS,RP0
+	bcf	v
 	clrf	PORTA
 	clrf	pul1
 	clrf	pul2
@@ -74,28 +74,28 @@ ini_p
 	goto	ini_p
 
 set_all
-	bsf		pwm1
-	bcf		direc1
+	bsf	pwm1
+	bcf	direc1
 	call	act_serial
 	btfss	set_v
 	goto	$-1
-	bcf		pwm1
+	bcf	pwm1
 	movlw	.1
 	movwf	num_piso
 	movwf	piso_act
 	clrf	encoder
 	call	act_serial
-	bsf		pwm2
-	bcf		direc2
+	bsf	pwm2
+	bcf	direc2
 	call	act_serial
 	btfsc	sw2
 	goto	$-1
-	bcf		pwm2
+	bcf	pwm2
 	call	act_serial
 	return
 
 act_serial
-	bcf		v
+	bcf	v
 	movf	num_piso,0
 	call	tabla1
 	movwf	disp_piso
@@ -111,7 +111,7 @@ serial_3
 	movf	disp_piso,0
 	movwf	reg_seriales
 	call	enviar
-	bsf		v
+	bsf	v
 	return
 	
 enviar
@@ -122,20 +122,20 @@ test_bits
 	goto	bajo
 	goto	alto
 bajo
-	bcf		dato
-	bsf		clk
-	nop;call	ret_5us
-	bcf		clk
+	bcf	dato
+	bsf	clk
+	nop;call ret_5us
+	bcf	clk
 	goto	sig_bit
 alto
-	bsf		dato
-	bsf		clk
-	nop;call	ret_5us
-	bcf		clk
-	bcf		dato
+	bsf	dato
+	bsf	clk
+	nop;call  ret_5us
+	bcf	clk
+	bcf	dato
 	goto	sig_bit
 sig_bit
-	rlf		reg_seriales,1
+	rlf	reg_seriales,1
 	decfsz	nbits,1
 	goto	test_bits
 	return
@@ -157,8 +157,8 @@ piso_sol
 negativo
 	movf	aux_2_down,0
 	movwf	enc_piso
-	bsf		pwm1
-	bcf		direc1
+	bsf	pwm1
+	bcf	direc1
 	call	act_serial
 test_enc_neg
 	btfsc	enc_v
@@ -205,8 +205,8 @@ test_enc_neg
 positivo
 	movf	aux_2_up,0
 	movwf	enc_piso
-	bsf		pwm1
-	bsf		direc1
+	bsf	pwm1
+	bsf	direc1
 	call	act_serial
 test_enc_pos
 	btfsc	enc_v
@@ -247,7 +247,7 @@ apagar_led
 	return
 
 detener
-	bcf		pwm1
+	bcf	pwm1
 	movf	piso_s,0
 	movwf	num_piso
 	call	act_serial
@@ -258,21 +258,21 @@ piso_solicitado
 	movf	piso_s,0
 	movwf	piso_act
 	call	apagar_led
-	bsf		pwm2
-	bsf		direc2
+	bsf	pwm2
+	bsf	direc2
 	call	act_serial
 	btfsc	sw1
 	goto	$-1
-	bcf		pwm2
+	bcf	pwm2
 	call	act_serial
 	call	ret_1s
 	call	ret_1s
-	bsf		pwm2
-	bcf		direc2
+	bsf	pwm2
+	bcf	direc2
 	call	act_serial
 	btfsc	sw2
 	goto	$-1
-	bcf		pwm2
+	bcf	pwm2
 	call	act_serial
 	call	ret_1s
 	call	ret_1s
@@ -294,10 +294,10 @@ piso4
 	sublw	.7
 	btfss	STATUS,Z
 	goto	piso3
-	bsf		p4
+	bsf	p4
 	goto	$+3
-	bsf		down4
-	bsf		led4
+	bsf	down4
+	bsf	led4
 	movlw	.4
 	movwf	aux_1
 	movlw	.40
@@ -316,13 +316,13 @@ piso3
 	sublw	.8
 	btfss	STATUS,Z
 	goto	piso2
-	bsf		p3
+	bsf	p3
 	goto	$+6
-	bsf		down3
-	bsf		led3_b
+	bsf	down3
+	bsf	led3_b
 	goto	$+3
-	bsf		up3
-	bsf		led3_a
+	bsf	up3
+	bsf	led3_a
 	movlw	.3
 	movwf	aux_1
 	movlw	.27
@@ -344,13 +344,13 @@ piso2
 	sublw	.9
 	btfss	STATUS,Z
 	goto	piso1
-	bsf		p2
+	bsf	p2
 	goto	$+6
-	bsf		down2
-	bsf		led2_b
+	bsf	down2
+	bsf	led2_b
 	goto	$+3
-	bsf		up2
-	bsf		led2_a
+	bsf	up2
+	bsf     led2_a
 	movlw	.2
 	movwf	aux_1
 	movlw	.13
@@ -367,10 +367,10 @@ piso1
 	sublw	.10
 	btfss	STATUS,Z
 	goto	no_tecla
-	bsf		p1
+	bsf	p1
 	goto	$+3
-	bsf		up1
-	bsf		led1
+	bsf	up1
+	bsf	led1
 	movlw	.1
 	movwf	aux_1
 	movlw	.0
